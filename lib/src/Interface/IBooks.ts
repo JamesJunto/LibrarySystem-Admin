@@ -1,6 +1,6 @@
  export interface IBooks {
   title: string;
-  Author: string;
+  author: string;
   year: number;
   genre: string;
 }

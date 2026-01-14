@@ -1,12 +1,14 @@
 import { useState } from "react";
 import type { IBooks } from "../Interface/IBooks";
+import { useSubmitForm } from "../hooks/useSubmitForm";
 
 export const Form = ({ onClose }: { onClose: () => void }) => {
 
+  const { submitForm } = useSubmitForm();
+
   const [formData, setFormData] = useState<IBooks>({
-    
     title: "",
-    Author: "",
+    author: "",
     year: 0,
     genre: "",
   });
@@ -18,11 +20,12 @@ export const Form = ({ onClose }: { onClose: () => void }) => {
       ...prev,
       [name]: name === "year" ? Number(value) : value,
     }));
+
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData); 
+    await submitForm(formData);
     alert("Book saved successfully!");
     onClose();
   };
@@ -64,8 +67,8 @@ export const Form = ({ onClose }: { onClose: () => void }) => {
           </label>
           <input
             type="text"
-            name="Author"
-            value={formData.Author}
+            name="author"
+            value={formData.author}
             onChange={handleChange}
             className="input input-bordered w-full bg-white"
           />
