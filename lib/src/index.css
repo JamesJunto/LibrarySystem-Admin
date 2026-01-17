@@ -1,8 +1,0 @@
-@import "tailwindcss";
-
-@plugin "daisyui" {
-   themes: light --default, acid;
- }
- @theme{
-  --shadow-header:rgba(0, 0, 0, 0.24) 0px 3px 8px; 
- }
