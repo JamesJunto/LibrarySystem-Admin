@@ -1,42 +1,58 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { IBooks } from "../Interface/IBooks";
 import { useSubmitForm } from "../hooks/useSubmitForm";
 
 export const Form = ({ onClose }: { onClose: () => void }) => {
-
   const { submitForm } = useSubmitForm();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<IBooks>({
     id: 0,
     title: "",
     author: "",
-    year: 0,
+    year: "",
     genre: "",
   });
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.max = new Date().getFullYear().toString();
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === "year" ? Number(value) : value,
+      [name]: value,
     }));
-
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const {title, author, genre} = formData
+    const { title, author, genre, year } = formData;
+    const yearValue = year.trim();
+    const yearNumber = Number(yearValue);
 
-    if(!title.trim() ||!author.trim() || !genre.trim()){
-       alert("fill all the blanks")
-    }else{
-      await submitForm(formData)
-      alert("data save to the database!")
-      onClose()
+    if (
+      !title.trim() ||
+      !author.trim() ||
+      !genre.trim() ||
+      !yearValue ||
+      isNaN(yearNumber) ||
+      yearNumber <= 0
+    ) {
+      alert(
+        "Invalid input! Make sure all fields are filled and Year is a valid number."
+      );
+      return;
     }
 
+    await submitForm(formData);
+    alert("Data saved to the database!");
+    onClose();
   };
 
   return (
@@ -88,9 +104,10 @@ export const Form = ({ onClose }: { onClose: () => void }) => {
             Year
           </label>
           <input
-            type="number"
+            type="text"
             name="year"
-            value={formData.year}
+            value={String(formData.year)}
+            ref={inputRef}
             onChange={handleChange}
             className="input input-bordered w-full bg-white"
           />
