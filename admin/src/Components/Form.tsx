@@ -52,6 +52,7 @@ export const Form = ({ onClose }: { onClose: () => void }) => {
 
     await submitForm(formData);
     alert("Data saved to the database!");
+    window.location.reload();
     onClose();
   };
 

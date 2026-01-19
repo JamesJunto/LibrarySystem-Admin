@@ -1,10 +1,10 @@
-import { AllBooks } from '../Data/AllBooks';
+import { useAllBooks } from '../Data/AllBooks'; // renamed to useAllBooks
 import { Form } from '../Components/Form';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = () => {
-  const Books = AllBooks();
+  const { data: books, loading, error } = useAllBooks();
   const [formVisible, setFormVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -18,6 +18,24 @@ export const Dashboard = () => {
     };
     return colors[genre] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <div className="alert alert-error">
+          <span>Error: {error}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-screen flex justify-center items-start pt-20">
@@ -54,7 +72,7 @@ export const Dashboard = () => {
             </thead>
 
             <tbody>
-              {Books.map((book) => (
+              {books.map((book) => (
                 <tr
                   key={book.id}
                   onClick={() => navigate(`/booksinfo/${book.id}`)}
@@ -87,7 +105,7 @@ export const Dashboard = () => {
         {/* FOOTER */}
         <div className="px-6 py-4 border-t bg-gray-50 text-sm">
           Total Books:{' '}
-          <span className="font-semibold">{Books.length}</span>
+          <span className="font-semibold">{books.length}</span>
         </div>
       </div>
     </div>
