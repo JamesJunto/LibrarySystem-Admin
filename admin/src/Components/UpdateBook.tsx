@@ -1,15 +1,18 @@
+import { useUpdateBook } from "../hooks/useUpdateBook";
 import type { IBooks } from "../Interface/IBooks";
 import { useState  } from "react";
+
 export const UpdateBook = ({ onClose,book }: { onClose: () => void; book: IBooks }) => {
 
+  const { updateBook }  = useUpdateBook();
 
   const [formData, setFormData] = useState({
     id: book.id,
-    title: "",
-    author: "",
-    year: ""
+    title: book.title,
+    author: book.author,
+    year: book.year,
+    genre: book.genre
   });
-
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -20,29 +23,8 @@ export const UpdateBook = ({ onClose,book }: { onClose: () => void; book: IBooks
     }));
   };
 
-  const updateBook = async () => {
-    try{
-     const response = await fetch("http://localhost:8080/updateBook.php", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const result = await response.json()
-
-     if (!response.ok) {
-        console.error("Server returned an error:", response.status);
-        return;
-      }
-
-      alert("Book deleted Successfully!");
-      window.location.reload()
-      console.log(result)
-    }catch(e){
-      console.error(e)
-    }
+  const handleUpdate = async () => {
+    await updateBook("http://localhost:8080/updateBook.php", formData)
   }
 
   return (
@@ -101,7 +83,7 @@ export const UpdateBook = ({ onClose,book }: { onClose: () => void; book: IBooks
             />
           </div>
 
-          <button onClick={updateBook} className ="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
+          <button onClick={handleUpdate} className ="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
             Update Book
           </button>
         </div>
